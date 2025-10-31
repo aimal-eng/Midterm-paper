@@ -1,0 +1,138 @@
+#include <iostream>
+using namespace std;
+
+class PatientNode {
+public:
+    int patientID;
+    PatientNode* next;
+    PatientNode* prev;
+
+    PatientNode(int id) {
+        patientID = id;
+        next = nullptr;
+        prev = nullptr;
+    }
+};
+
+class EmergencyRoom {
+public:
+    PatientNode* head;
+    PatientNode* tail;
+    int totalPatients;
+    
+    EmergencyRoom() {
+        head = nullptr;
+        tail = nullptr;
+        totalPatients = 0;
+    }
+    void insertAtBeginning(int patientID) {
+        PatientNode* newPatient = new PatientNode(patientID);
+        if (head == nullptr) { 
+            head = tail = newPatient;
+        } else {
+            newPatient->next = head;
+            head->prev = newPatient;
+            head = newPatient;
+        }
+        totalPatients++;
+        cout << "Critical patient " << patientID << " added at the beginning.\n";
+    }
+    void insertAtEnd(int patientID) {
+        PatientNode* newPatient = new PatientNode(patientID);
+        if (head == nullptr) { 
+            head = tail = newPatient;
+        } else {
+            tail->next = newPatient;
+            newPatient->prev = tail;
+            tail = newPatient;
+        }
+        totalPatients++;
+        cout << "Normal patient " << patientID << " added at the end.\n";
+    }
+    void insertAtPosition(int patientID, int position) {
+        if (position < 1 || position > totalPatients + 1) {
+            cout << "❌ Invalid position! Cannot insert patient " << patientID << ".\n";
+            return;
+        }
+        if (position == 1) {
+            insertAtBeginning(patientID);
+            return;
+        }
+        if (position == totalPatients + 1) {
+            insertAtEnd(patientID);
+            return;
+        }
+        PatientNode* newPatient = new PatientNode(patientID);
+        PatientNode* current = head;
+
+        for (int i = 1; i < position - 1; i++) {
+            current = current->next;
+        }
+        newPatient->next = current->next;
+        newPatient->prev = current;
+        current->next->prev = newPatient;
+        current->next = newPatient;
+        totalPatients++;
+        cout << "Patient " << patientID << " inserted at position " << position << ".\n";
+    }
+    void deleteFromBeginning() {
+        if (head == nullptr) {
+            cout << "No patients in the ER to remove.\n";
+            return;
+        }
+        PatientNode* temp = head;
+        cout << "Patient " << temp->patientID << " treated and removed from ER.\n";
+        if (head == tail) { 
+            head = tail = nullptr;
+        } else {
+            head = head->next;
+            head->prev = nullptr;
+        }
+        delete temp;
+        totalPatients--;
+    }
+    void displayForward() {
+        if (head == nullptr) {
+            cout << "ER Queue is empty.\n";
+            return;
+        }
+        cout << "Queue (Front → End): ";
+        PatientNode* temp = head;
+        while (temp != nullptr) {
+            cout << temp->patientID;
+            if (temp->next) cout << " ⇄ ";
+            temp = temp->next;
+        }
+        cout << endl;
+    }
+    void displayBackward() {
+        if (tail == nullptr) {
+            cout << "ER Queue is empty.\n";
+            return;
+        }
+        cout << "Queue (End → Front): ";
+        PatientNode* temp = tail;
+        while (temp != nullptr) {
+            cout << temp->patientID;
+            if (temp->prev) cout << " ⇄ ";
+            temp = temp->prev;
+        }
+        cout << endl;
+    }};
+
+int main(){
+    EmergencyRoom ER;
+    ER.insertAtEnd(101);        
+    ER.insertAtEnd(102);        
+    ER.insertAtBeginning(200);  
+    ER.insertAtPosition(150, 2);
+    ER.deleteFromBeginning();   
+    ER.insertAtEnd(300);        
+
+    cout << "\nFinal Queue Status:\n";
+    ER.displayForward();
+    ER.displayBackward();
+    cout << "\nTotal patients currently in ER: " << ER.totalPatients << endl;
+    
+    return 0;
+}
