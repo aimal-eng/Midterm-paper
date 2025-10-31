@@ -1,0 +1,76 @@
+**Dry Run (Initial State)
+
+*List is empty:
+	head = NULL  
+	tail = NULL
+
+**Step 1: insertAtEnd(101)
+
+	Since the list is empty, node 101 becomes both head and tail.
+	NULL ←→ [101] ←→ NULL
+	head = 101
+	tail = 101
+
+**Step 2: insertAtEnd(102)
+	Add node 102 to the end.
+	[101].next = 102
+	[102].prev = 101
+	NULL ←→ [101] ⇄ [102] ←→ NULL
+
+
+	head = 101
+	tail = 102
+
+**Step 3: insertAtBeginning(200) (critical patient)
+	Insert 200 at the beginning.
+	[200].next = 101
+	[101].prev = 200
+	NULL ←→ [200] ⇄ [101] ⇄ [102] ←→ NULL
+
+
+	head = 200
+	tail = 102
+
+**Step 4: insertAtPosition(150, 2)
+
+	Insert 150 at position 2 (after 200, before 101).
+	[200].next = 150
+	[150].prev = 200
+	[150].next = 101
+	[101].prev = 150
+
+	NULL ←→ [200] ⇄ [150] ⇄ [101] ⇄ [102] ←→ NULL
+
+
+	head = 200
+	tail = 102
+
+
+**Step 5: deleteFromBeginning()
+
+
+	Delete the first node (200).
+	New head = [150]
+	[150].prev = NULL
+	NULL ←→ [150] ⇄ [101] ⇄ [102] ←→ NULL
+
+	head = 150
+	tail = 102
+
+**Step 6: insertAtEnd(300)
+
+	Add 300 at the end.
+	[102].next = 300
+	[300].prev = 102
+
+	NULL ←→ [150] ⇄ [101] ⇄ [102] ⇄ [300] ←→ NULL
+
+	head = 150
+	tail = 300
+
+Final Answers (After Step 6)
+Question	Answer
+(a) PatientID at head	150
+(b) PatientID at tail	300
+(c) Forward (head → tail)	150 → 101 → 102 → 300
+(d) Backward (tail → head)	300 → 102 → 101 → 150
